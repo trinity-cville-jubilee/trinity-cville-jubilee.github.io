@@ -22,8 +22,9 @@
   --font-heading: 'Barlow Condensed', sans-serif;
   --font-body: 'Noticia Text', serif;
 
+  --color-gray-dd: #222;
   --color-gray-ll: #ddd;
-  --color-muted: #666;
+  --color-gray: #616161;
   --photo-aspect-ratio: 4 / 3;
 
   /* Fallback header colors for pages with no .page-* body class (Timeline,
@@ -43,6 +44,7 @@
 html {
   /* Ample editorial base — 18px on small screens up to 22px on wide ones.
      Every other rem value in the site scales off this. */
+  color: var(--color-gray-dd);
   font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
   line-height: 1.8;
   -webkit-text-size-adjust: 100%;
@@ -87,7 +89,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 3rem 8.3333% 0;
+  padding: 2.5rem 8.3333% 1rem;
   text-align: center;
 }
 
@@ -179,16 +181,17 @@ img {
 }
 
 .nav-list a {
-  border-bottom: 0.5rem solid transparent;
+  border-bottom: 0.25rem solid transparent;
   color: inherit;
   display: block;
-  padding: 0.5rem 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.25rem;
   text-decoration: none;
 }
 
 @media (min-width: 48rem) {
   .nav-list a {
-    padding: 1rem 1rem 1rem;
+    border-bottom-width: 0.5rem;
+    padding: 1rem 1rem 0.5rem;
   }
 }
 
@@ -198,6 +201,40 @@ img {
 }
 
 /* Components */
+
+/* Hero */
+.hero {
+  text-wrap: balance;
+}
+
+.hero-title,
+.hero-subtitle {
+  display: block;
+  margin: 0;
+  text-align: center;
+}
+
+.hero-title {
+  --color-sage: #619080;
+  --color-dusty-rose: #c8a2a8;
+  --color-cream: #f1ede1; /* was given as #flede1 — 'l' isn't a hex digit, read as #f1ede1 */
+  --color-plum: #5e4962;
+  --color-denim: #495d94;
+  --color-mint: #9ac8b9;
+
+  color: var(--color-sage);
+  font-family: var(--font-body);
+  font-size: 2.5rem;
+  line-height: 1.1;
+  margin-block-end: 0.25em;
+}
+
+@media (min-width: 48rem) {
+  .hero-title {
+    font-size: 3rem;
+  }
+}
+
 
 /* Carousel — functional minimum only; visual design is yours.
    main.js injects .carousel-viewport (clips) around the gallery <ul>
@@ -441,27 +478,27 @@ img {
 .memory-photos .photo-frame {
   border: 0.25rem solid white;
   box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
-  width: 6rem;
+  flex: 1 1 8rem;
 }
 
 .memory-photos .photo-frame:nth-child(1) {
-  transform: rotate(-6deg);
-}
-
-.memory-photos .photo-frame:nth-child(2) {
-  transform: rotate(4deg);
-}
-
-.memory-photos .photo-frame:nth-child(3) {
   transform: rotate(-3deg);
 }
 
+.memory-photos .photo-frame:nth-child(2) {
+  transform: rotate(2deg);
+}
+
+.memory-photos .photo-frame:nth-child(3) {
+  transform: rotate(-2deg);
+}
+
 .memory-photos .photo-frame:nth-child(4) {
-  transform: rotate(5deg);
+  transform: rotate(3deg);
 }
 
 .memory-photos .photo-frame:nth-child(5) {
-  transform: rotate(-4deg);
+  transform: rotate(-2deg);
 }
 
 /* Clips long memories to 6 lines in the grid; .memory-card-clickable (added
@@ -530,14 +567,35 @@ img {
   min-width: var(--card-min-width);
 }
 
+/* Same "real photo" card treatment as the Memory Wall and Timeline photos
+   — white border, drop shadow — but around the whole card (image, heading,
+   and description together) rather than just the image, and with no
+   rotation (unlike those two) since a tilted heading/paragraph reads as
+   sloppy rather than photo-like. */
 .card a {
+  background-color: white;
+  border: 0.25rem solid white;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
   color: inherit;
   display: block;
+  padding: 0.5rem 0.5rem 1rem;
   text-decoration: none;
 }
 
 .card .photo-frame {
   margin-block-end: 1rem;
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  line-height: 1.1;
+  margin-block: 0 0.5rem;
+}
+
+.card p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* Footer */
@@ -582,7 +640,7 @@ img {
 }
 
 .footer-meta {
-  color: var(--color-muted);
+  color: var(--color-gray);
   font-size: 0.75rem;
   margin: 2rem 0 0;
 }
@@ -594,6 +652,7 @@ main {
 }
 
 .page-intro,
+.hero,
 .photo-gallery,
 .card-grid,
 .memory-grid,

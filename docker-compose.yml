@@ -1,0 +1,15 @@
+services:
+  jubilee:
+    image: nginx:alpine
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    networks:
+      - journey-network
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.jubilee.rule: "Host(`local.jubilee.trinitycville.org`)"
+      traefik.http.services.jubilee.loadbalancer.server.port: "80"
+
+networks:
+  journey-network:
+    external: true

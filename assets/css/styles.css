@@ -1,0 +1,643 @@
+/* ==========================================================================
+   Trinity Presbyterian Church — Jubilee Site
+   This file is intentionally minimal (reset + structural hooks only).
+   Design/CSS work happens from here — see class names used in the HTML:
+     .site-header .site-nav .nav-list
+     .hero .card-grid .card-row .card .photo-frame
+     .photo-gallery .carousel-viewport .carousel-track .carousel-controls .photo-gallery-item
+     .chapter .testimonial
+     .timeline-list .timeline-item .timeline-photos
+     .memory-card .memory-grid .memory-dialog
+     .site-footer .footer-logo-img .footer-nav .footer-meta
+   ========================================================================== */
+
+:root {
+  --color-sage: #619080;
+  --color-dusty-rose: #c8a2a8;
+  --color-cream: #f1ede1; /* was given as #flede1 — 'l' isn't a hex digit, read as #f1ede1 */
+  --color-plum: #5e4962;
+  --color-denim: #495d94;
+  --color-mint: #9ac8b9;
+
+  --font-heading: 'Barlow Condensed', sans-serif;
+  --font-body: 'Noticia Text', serif;
+
+  --color-gray-ll: #ddd;
+  --color-muted: #666;
+  --photo-aspect-ratio: 4 / 3;
+
+  /* Fallback header colors for pages with no .page-* body class (Timeline,
+     Memory Wall) — matches the original default (sage/white). */
+  --header-bg: var(--color-sage);
+  --header-fg: white;
+  --page-tint: color-mix(in srgb, var(--color-sage) 12%, white);
+}
+
+/* Base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Ample editorial base — 18px on small screens up to 22px on wide ones.
+     Every other rem value in the site scales off this. */
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  line-height: 1.8;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.3333;
+}
+
+figure {
+  margin: 0;
+}
+
+img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+/* Typography */
+
+/* Layout */
+
+/* Header */
+/* .site-header needs a dark/sage surface — the logo SVG is white ink and is invisible on white */
+.site-header {
+  align-items: center;
+  background-color: var(--header-bg);
+  color: var(--header-fg);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 8.3333% 0;
+  text-align: center;
+}
+
+.site-header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --header-bg/--header-fg are set per page below and inherited by both
+   .site-header and .site-nav (a sibling, not a child — see the Navigation
+   section for why). sage/plum/denim are dark enough for white text; dusty-
+   rose and mint aren't (fails WCAG contrast against white), so Go and Grow
+   pair with plum text and a plum-ink logo variant
+   (jubilee-lockup-plum-on-transparent.svg) instead of the white one. cream
+   was left out entirely since a 6th color didn't fit 5 pages. */
+.page-home {
+  --header-bg: var(--color-sage);
+  --header-fg: white;
+  --page-tint: color-mix(in srgb, var(--color-sage) 12%, white);
+}
+
+.page-gather {
+  --header-bg: var(--color-denim);
+  --header-fg: white;
+  --page-tint: color-mix(in srgb, var(--color-denim) 12%, white);
+}
+
+.page-grow {
+  --header-bg: var(--color-mint);
+  --header-fg: var(--color-plum);
+  --page-tint: color-mix(in srgb, var(--color-mint) 12%, white);
+}
+
+.page-go {
+  --header-bg: var(--color-dusty-rose);
+  --header-fg: var(--color-plum);
+  --page-tint: color-mix(in srgb, var(--color-dusty-rose) 12%, white);
+}
+
+.page-glorify {
+  --header-bg: var(--color-plum);
+  --header-fg: white;
+  --page-tint: color-mix(in srgb, var(--color-plum) 12%, white);
+}
+
+.site-logo-img {
+  aspect-ratio: 1;
+  display: block;
+  height: auto;
+  margin-inline: auto;
+  max-width: 20rem;
+  width: 80%;
+}
+
+/* Navigation */
+/* Deliberately a sibling of .site-header, not nested inside it: position:
+   sticky only stays stuck while its containing block still has room above
+   the viewport bottom, and the old header (logo + nav together) was too
+   short a box for that to hold for more than an instant. As a sibling with
+   the whole page below it, the nav stays pinned to top:0 for the full
+   scroll. --header-bg/--header-fg come from the body.page-* rules above. */
+.site-nav {
+  background-color: var(--header-bg);
+  color: var(--header-fg);
+  padding: 0 8.3333%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-list {
+  display: flex;
+  font-size: 1rem;
+  justify-content: space-between;
+  line-height: 1.333;
+  list-style: none;
+  margin: 0 auto;
+  max-width: 22em;
+  padding: 0;
+}
+
+@media (min-width: 48rem) {
+  .nav-list {
+    font-size: 1.333rem;
+    gap: 3rem;
+    justify-content: center;
+    max-width: none;
+  }
+}
+
+.nav-list a {
+  border-bottom: 0.5rem solid transparent;
+  color: inherit;
+  display: block;
+  padding: 0.5rem 0.5rem 1rem;
+  text-decoration: none;
+}
+
+@media (min-width: 48rem) {
+  .nav-list a {
+    padding: 1rem 1rem 1rem;
+  }
+}
+
+.nav-list a[aria-current='page'] {
+  border-bottom-color: currentColor;
+  font-weight: bold;
+}
+
+/* Components */
+
+/* Carousel — functional minimum only; visual design is yours.
+   main.js injects .carousel-viewport (clips) around the gallery <ul>
+   (.carousel-track), and .carousel-controls (prev/next/count) after it.
+   Slides sit side by side in a flex row; a single translateX on the track
+   positions the active one and follows the pointer live while dragging. */
+.carousel-viewport {
+  overflow: hidden;
+}
+
+.carousel-track {
+  cursor: pointer;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  touch-action: pan-y; /* let vertical page scroll through; horizontal drag drives the swipe */
+  transition: transform 0.25s ease;
+}
+
+.carousel-track.is-dragging {
+  transition: none;
+}
+
+.carousel-track > * {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* Every gallery/card photo sits in a fixed-aspect box, letterboxed in gray
+   when its own proportions don't match — swap --photo-aspect-ratio to
+   change it sitewide. This is a reusable component (galleries and the
+   homepage's .card-row both use it), not scoped to .photo-gallery — in a
+   gallery it wraps just the <img> inside <figure>, so the <figcaption>
+   stays normal flow below it instead of being squeezed into the same flex
+   box as the image. */
+.photo-frame {
+  align-items: center;
+  aspect-ratio: var(--photo-aspect-ratio);
+  background-color: var(--color-gray-ll);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.photo-frame img {
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-drag: none; /* stop the browser's native image drag from hijacking our pointer drag */
+  user-select: none;
+  width: 100%;
+}
+
+.carousel-controls {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* .timeline-scroller / .timeline-sticky: normal vertical page scroll drives
+   the horizontal scroll of .timeline-list below — main.js gives the
+   scroller extra height (viewport height + however far the strip needs to
+   travel) and maps scroll progress through that height onto scrollLeft.
+   --nav-height is measured by main.js so this clears the sticky site-nav
+   instead of sliding underneath it; skipped under prefers-reduced-motion,
+   where the timeline is just a normal (manually) scrollable strip.
+   max-height keeps this from ever exceeding the viewport itself — without
+   it, an entry with enough stacked photos to run taller than the screen
+   forces the page to keep scrolling vertically to reveal the rest of it
+   even while "stuck," which fights with the horizontal scroll-jacking and
+   reads as a diagonal scroll. No vertical scrolling inside here even if
+   something still overflows (see .timeline-photos below, which wraps into
+   extra columns instead of running tall) — overflow stays hidden rather
+   than auto so an unexpectedly tall entry clips instead of scrolling. */
+.timeline-sticky {
+  max-height: calc(100vh - var(--nav-height, 4.5rem));
+  overflow: hidden;
+  position: sticky;
+  top: var(--nav-height, 4.5rem);
+}
+
+/* Timeline — a horizontally-scrolling strip. The line across the top is a
+   border on the flex container itself (spans the full scrollable width in
+   one continuous stroke); each item's cross-hatch is a short vertical tick
+   hanging from that line via ::before, positioned under its date. */
+.timeline-list {
+  border-top: 2px solid var(--color-sage);
+  display: flex;
+  gap: 0;
+  list-style: none;
+  margin: 2rem 0 0;
+  overflow-x: auto;
+  padding: 0 0 2rem;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge */
+}
+
+.timeline-list::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.timeline-item {
+  flex: 0 0 16rem;
+  padding: 1.5rem 1.5rem 0;
+  position: relative;
+}
+
+.timeline-item::before {
+  background-color: var(--color-sage);
+  content: '';
+  height: 1rem;
+  left: 1.5rem;
+  position: absolute;
+  top: 0;
+  width: 2px;
+}
+
+.timeline-item time {
+  color: var(--color-sage);
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-block-end: 0.5rem;
+}
+
+.timeline-item p {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Every entry (even a single photo — main.js still wires up the click for
+   it) gets the same fixed footprint regardless of count — piled on top of
+   each other with a slight fan of rotation via nth-child, front photo
+   squared up on top — instead of stacking vertically and risking
+   overflowing .timeline-sticky's height. Click/tap opens the full set in
+   .timeline-dialog, the same click-to-popover pattern as the Memory Wall. */
+.timeline-photos {
+  cursor: pointer;
+  height: 8rem;
+  margin-block-start: 1rem;
+  position: relative;
+  width: 8rem;
+}
+
+.timeline-photos img {
+  border: 0.25rem solid white;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
+  height: 100%;
+  left: 0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.timeline-photos img:nth-child(1) {
+  transform: rotate(-8deg);
+  z-index: 1;
+}
+
+.timeline-photos img:nth-child(2) {
+  transform: rotate(6deg);
+  z-index: 2;
+}
+
+.timeline-photos img:nth-child(3) {
+  transform: rotate(-5deg);
+  z-index: 3;
+}
+
+.timeline-photos img:nth-child(4) {
+  transform: rotate(7deg);
+  z-index: 4;
+}
+
+.timeline-photos img:nth-child(5) {
+  transform: rotate(-4deg);
+  z-index: 5;
+}
+
+.timeline-photos img:last-child {
+  transform: rotate(0deg);
+  z-index: 6;
+}
+
+.timeline-dialog {
+  border: 0;
+  max-width: 30rem;
+  padding: 2rem;
+}
+
+.timeline-dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.timeline-dialog-close {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  float: right;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.timeline-dialog-images {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.timeline-dialog-images img {
+  width: 100%;
+}
+
+/* Memory Wall */
+.memory-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Same "real photo" treatment as the Timeline stacks — white border, drop
+   shadow, a slight per-item tilt via nth-child — but laid out as a loose
+   row here rather than an overlapping pile, since a memory card's photos
+   don't have the Timeline's fixed-footprint/overflow problem to solve. */
+.memory-photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block-end: 1rem;
+}
+
+.memory-photos .photo-frame {
+  border: 0.25rem solid white;
+  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
+  width: 6rem;
+}
+
+.memory-photos .photo-frame:nth-child(1) {
+  transform: rotate(-6deg);
+}
+
+.memory-photos .photo-frame:nth-child(2) {
+  transform: rotate(4deg);
+}
+
+.memory-photos .photo-frame:nth-child(3) {
+  transform: rotate(-3deg);
+}
+
+.memory-photos .photo-frame:nth-child(4) {
+  transform: rotate(5deg);
+}
+
+.memory-photos .photo-frame:nth-child(5) {
+  transform: rotate(-4deg);
+}
+
+/* Clips long memories to 6 lines in the grid; .memory-card-clickable (added
+   by main.js only to cards that actually have a blockquote — photo-only
+   submissions have nothing to expand) opens the full text in a dialog. */
+.memory-card blockquote {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  margin: 0;
+  overflow: hidden;
+}
+
+.memory-card-clickable {
+  cursor: pointer;
+}
+
+.memory-dialog {
+  border: 0;
+  max-width: 40rem;
+  padding: 2rem;
+}
+
+.memory-dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.memory-dialog-close {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  float: right;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.memory-dialog-body blockquote {
+  margin: 0;
+}
+
+/* Explore Our Jubilee cards — Gather/Grow/Go/Glorify. Flex-basis of ~50% is
+   what caps this at two per row (not just "however many fit at
+   --card-min-width", which was landing on three) — it drops to one column
+   once --card-min-width can't fit two side by side. (Memory Wall and
+   Timeline moved out of this grid into their own teaser sections below it.) */
+.card-grid {
+  --card-min-width: 14rem;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card-row + .card-row {
+  margin-block-start: 2rem;
+}
+
+.card {
+  flex: 1 1 calc(50% - 1rem); /* 1rem = half the row's 2rem gap */
+  min-width: var(--card-min-width);
+}
+
+.card a {
+  color: inherit;
+  display: block;
+  text-decoration: none;
+}
+
+.card .photo-frame {
+  margin-block-end: 1rem;
+}
+
+/* Footer */
+/* Light gray is constant across every page, so the logo here always uses
+   the plum-ink variant (a white logo would vanish against it). */
+.site-footer {
+  background-color: var(--color-gray-ll);
+  padding: 3rem 8.3333%;
+  text-align: center;
+}
+
+.footer-logo {
+  display: block;
+}
+
+.footer-logo-img {
+  display: block;
+  height: auto;
+  margin: 0 auto 2rem;
+  width: 8rem;
+}
+
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footer-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-meta {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  margin: 2rem 0 0;
+}
+
+/* Page-specific styles */
+
+main {
+  padding-block-end: 3rem;
+}
+
+.page-intro,
+.photo-gallery,
+.card-grid,
+.memory-grid,
+.text-section {
+  margin-block: 3rem;
+  padding: 0 8.333%;
+}
+
+.page-intro {
+  background-color: var(--page-tint);
+  margin-block: 0;
+  padding-block: 3rem;
+}
+
+.text-section {
+  padding-inline: 16.666%;
+}
+
+.text-section + .text-section {
+  padding-block-start: 3rem;
+  position: relative;
+}
+
+.text-section + .text-section::before {
+  border-block-start: 0.25rem solid var(--color-gray-ll);
+  content: '';
+  margin-inline-start: -5rem;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 10rem;
+}
+
+/* Media queries */
+
+/* Utility */
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

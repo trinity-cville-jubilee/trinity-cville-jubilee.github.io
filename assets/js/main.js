@@ -11,11 +11,39 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Tags portrait (narrower-than-tall) photos in the Memory Wall popover
+// with .photo-portrait so CSS can cap their width — a full-width portrait
+// photo in that list reads as oversized next to the landscape ones.
+// naturalWidth/naturalHeight aren't available until the image has
+// actually loaded, so cards whose photos aren't already cached (e.g. the
+// first time a particular card is opened) get checked on load instead.
+function markPortraitPhotos(container) {
+  container.querySelectorAll('img').forEach(function (img) {
+    function check() {
+      if (img.naturalWidth && img.naturalHeight && img.naturalWidth / img.naturalHeight < 1) {
+        img.classList.add('photo-portrait');
+      }
+    }
+    if (img.complete) {
+      check();
+    } else {
+      img.addEventListener('load', check);
+    }
+  });
+}
+
 // Memory Wall: each .memory-card's blockquote is visually clipped (see
 // the CSS line-clamp on .memory-card blockquote). Clicking a card that has
-// one opens its full, unclipped text in a <dialog> popover. Cards with no
-// blockquote (photo-only submissions) have nothing to expand and are left
-// alone — the dialog itself is built once, lazily, on first use.
+// a blockquote and/or photo(s) opens its full, unclipped text plus any
+// photos in a <dialog> popover. Multiple photos get the same
+// fixed-footprint fanned-stack look as the Timeline (.timeline-photos,
+// reused as-is; it's non-interactive here since the dialog is already the
+// "expanded" view). Photo-only cards (no blockquote) still open, showing
+// just the photos — and get a bigger, wider teaser stack (.memory-photos
+// -wide) instead of the small square one, since there's no text to make
+// room for. Left/right arrow keys, while the dialog is open, step through
+// every clickable card in page order, same pattern as the gallery
+// lightbox. The dialog itself is built once, lazily, on first use.
 
 document.addEventListener('DOMContentLoaded', function () {
   var cards = document.querySelectorAll('.memory-card');
@@ -39,21 +67,60 @@ document.addEventListener('DOMContentLoaded', function () {
     if (event.target === dialog) dialog.close();
   });
 
+  var openers = [];
+  var currentIndex = -1;
+
   cards.forEach(function (card) {
     var blockquote = card.querySelector('blockquote');
-    if (!blockquote) return;
+    var images = Array.prototype.slice.call(card.querySelectorAll('.memory-photos img'));
+    if (!blockquote && !images.length) return;
 
     var nameEl = card.querySelector('.memory-name');
+
+    if (!blockquote) {
+      var photosEl = card.querySelector('.memory-photos');
+      if (photosEl) photosEl.classList.add('memory-photos-wide');
+    }
 
     card.classList.add('memory-card-clickable');
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
     card.setAttribute('aria-label', 'Read full memory' + (nameEl ? ' from ' + nameEl.textContent.replace(/^—\s*/, '') : ''));
 
+    var index = openers.length;
+
     function open() {
-      body.innerHTML = blockquote.innerHTML + (nameEl ? nameEl.outerHTML : '');
-      dialog.showModal();
+      currentIndex = index;
+      var photosHtml = '';
+      if (images.length) {
+        // Full-width list (same class the Timeline's own dialog uses) —
+        // a higher-resolution look than the small fanned .memory-photos
+        // stack the card teaser shows.
+        photosHtml =
+          '<div class="timeline-dialog-images">' +
+          images
+            .map(function (img) {
+              return '<img src="' + img.src + '" alt="' + img.alt.replace(/"/g, '&quot;') + '">';
+            })
+            .join('') +
+          '</div>';
+      }
+      var textHtml = blockquote ? blockquote.innerHTML : '';
+      body.innerHTML = photosHtml + textHtml + (nameEl ? nameEl.outerHTML : '');
+      markPortraitPhotos(body);
+      // showModal() throws if the dialog is already open (arrow-key
+      // navigation reuses the same open dialog instead of closing and
+      // reopening it) — only call it the first time. Either way, reset
+      // scroll after the dialog has actually finished opening: setting
+      // scrollTop synchronously, before/alongside showModal(), doesn't
+      // reliably stick once the dialog moves into the top layer.
+      if (!dialog.open) dialog.showModal();
+      requestAnimationFrame(function () {
+        body.scrollTop = 0;
+      });
     }
+
+    openers.push(open);
 
     card.addEventListener('click', open);
     card.addEventListener('keydown', function (event) {
@@ -61,6 +128,36 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         open();
       }
+    });
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (!dialog.open) return;
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    var delta = event.key === 'ArrowLeft' ? -1 : 1;
+    currentIndex = (currentIndex + delta + openers.length) % openers.length;
+    openers[currentIndex]();
+  });
+});
+
+// Randomizes the fan rotation on Timeline/Memory Wall photo stacks so
+// every stack — even a single-photo one — gets its own slight, varied
+// tilt instead of the same fixed angles (and a forced-flat front photo)
+// for everyone. Front-to-back stacking order still comes from CSS
+// nth-child z-index; this only touches transform. The same degree range
+// reads as a much bigger tilt on the wide photo-only stacks
+// (.memory-photos-wide) than on the small square ones, and on a lone
+// photo (nothing else in the pile to visually balance it against) than
+// on a multi-photo fan, so both get a narrower range.
+document.addEventListener('DOMContentLoaded', function () {
+  var stacks = document.querySelectorAll('.timeline-photos, .memory-photos');
+  stacks.forEach(function (stack) {
+    var items = stack.querySelectorAll(':scope > img, :scope > .photo-frame');
+    var range = stack.classList.contains('memory-photos-wide') || items.length === 1 ? 8 : 24;
+    items.forEach(function (item) {
+      var angle = (Math.random() * range - range / 2).toFixed(1);
+      item.style.transform = 'rotate(' + angle + 'deg)';
     });
   });
 });
@@ -143,7 +240,9 @@ document.addEventListener('DOMContentLoaded', function () {
 // Timeline photo stacks: every .timeline-photos (one photo or several —
 // see CSS for the fixed-footprint fanned-rotation look, same either way)
 // is a clickable pile. Clicking/tapping it opens the full set in a dialog
-// popover, same click-to-popover pattern as the Memory Wall.
+// popover, same click-to-popover pattern as the Memory Wall. Left/right
+// arrow keys, while the dialog is open, step through every entry's stack
+// in page order, same pattern as the gallery lightbox.
 
 document.addEventListener('DOMContentLoaded', function () {
   var stacks = document.querySelectorAll('.timeline-photos');
@@ -151,6 +250,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var dialog = null;
   var imagesEl = null;
+  var openers = [];
+  var currentIndex = -1;
 
   function ensureDialog() {
     if (dialog) return;
@@ -159,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     dialog.setAttribute('aria-label', 'Photos');
     dialog.innerHTML =
       '<button type="button" class="timeline-dialog-close" aria-label="Close">&times;</button>' +
-      '<div class="timeline-dialog-images"></div>';
+      '<div class="timeline-dialog-body"><div class="timeline-dialog-images"></div></div>';
     document.body.appendChild(dialog);
     imagesEl = dialog.querySelector('.timeline-dialog-images');
 
@@ -168,6 +269,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     dialog.addEventListener('click', function (event) {
       if (event.target === dialog) dialog.close();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (!dialog.open) return;
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      var delta = event.key === 'ArrowLeft' ? -1 : 1;
+      currentIndex = (currentIndex + delta + openers.length) % openers.length;
+      openers[currentIndex]();
     });
   }
 
@@ -179,8 +289,11 @@ document.addEventListener('DOMContentLoaded', function () {
     stack.setAttribute('role', 'button');
     stack.setAttribute('aria-label', images.length > 1 ? 'View all ' + images.length + ' photos' : 'View photo');
 
+    var index = openers.length;
+
     function open() {
       ensureDialog();
+      currentIndex = index;
       imagesEl.innerHTML = images
         .map(function (img) {
           return '<img src="' + img.src + '" alt="' + img.alt.replace(/"/g, '&quot;') + '">';
@@ -188,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .join('');
       dialog.showModal();
     }
+
+    openers.push(open);
 
     stack.addEventListener('click', open);
     stack.addEventListener('keydown', function (event) {
@@ -301,6 +416,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     });
+
+    // .photo-gallery--flat opts a gallery out of pagination entirely (every
+    // photo just shows at once in the grid) — for the inline galleries
+    // dropped into prose, where paginating away one extra photo reads as
+    // more machinery than the content warrants.
+    if (gallery.classList.contains('photo-gallery--flat')) return;
 
     var pageCount = Math.ceil(items.length / PAGE_SIZE);
     if (pageCount <= 1) return;

@@ -67,45 +67,52 @@
   },
   {
     "original": "IMG_0305.JPEG",
-    "file": "unattributed-img-0305.jpg",
+    "file": "sarah-ward-02.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_2697.JPG",
-    "file": "unattributed-img-2697.jpg",
+    "file": "sarah-ward-06.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_4395.PNG",
-    "file": "unattributed-img-4395.jpg",
+    "file": "sarah-ward-01.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_8574.JPEG",
-    "file": "unattributed-img-8574.jpg",
+    "file": "sarah-ward-07.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_8721.JPEG",
-    "file": "unattributed-img-8721.jpg",
+    "file": "sarah-ward-04.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_8732.JPEG",
-    "file": "unattributed-img-8732.jpg",
+    "file": "sarah-ward-03.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "IMG_9584.JPEG",
-    "file": "unattributed-img-9584.jpg",
+    "file": "sarah-ward-05.jpg",
     "entry_index": null,
-    "status": "unattributed-generic"
+    "status": "matched",
+    "attribution": "Sarah Ward"
   },
   {
     "original": "ISI_Spring_Hike_2008-04-12 (1).jpg",
@@ -163,33 +170,33 @@
   },
   {
     "original": "TPC Lessons in Carols.jpeg",
-    "file": "general-tpc-lessons-and-carols.jpg",
-    "entry_index": null,
-    "status": "unattributed-named"
+    "file": "hunter-chorey-05.jpg",
+    "entry_index": 4,
+    "status": "matched"
   },
   {
     "original": "TPC Sanctuary - black_white with sun_shadow.jpeg",
-    "file": "general-tpc-sanctuary-bw.jpg",
-    "entry_index": null,
-    "status": "unattributed-named"
+    "file": "hunter-chorey-03.jpg",
+    "entry_index": 4,
+    "status": "matched"
   },
   {
     "original": "TPC front at sunset.jpeg",
-    "file": "general-tpc-front-sunset.jpg",
-    "entry_index": null,
-    "status": "unattributed-named"
+    "file": "hunter-chorey-02.jpg",
+    "entry_index": 4,
+    "status": "matched"
   },
   {
     "original": "TPC front building with evening sky.jpeg",
-    "file": "general-tpc-front-evening.jpg",
-    "entry_index": null,
-    "status": "unattributed-named"
+    "file": "hunter-chorey-04.jpg",
+    "entry_index": 4,
+    "status": "matched"
   },
   {
     "original": "TPC front window in fall.jpeg",
-    "file": "general-tpc-front-window-fall.jpg",
-    "entry_index": null,
-    "status": "unattributed-named"
+    "file": "hunter-chorey-01.jpg",
+    "entry_index": 4,
+    "status": "matched"
   },
   {
     "original": "Trinity_Thanksgiving_2012-11-17_3592.jpg",
@@ -250,5 +257,30 @@
     "file": "robert-cochran-01.jpg",
     "entry_index": 11,
     "status": "matched"
+  },
+  {
+    "original": "074776EC-E3A7-42F4-9509-E4CE642BB337.jpeg",
+    "file": "sheila-richardson-05.jpg",
+    "entry_index": 10,
+    "status": "matched"
+  },
+  {
+    "original": "267579DD-4023-4014-9DC2-ECAE27987DCA.jpeg",
+    "file": "sheila-richardson-06.jpg",
+    "entry_index": 10,
+    "status": "matched"
+  },
+  {
+    "original": "28A40282-35E1-4D57-BCFF-887FD546FBAA_1_105_c.jpeg",
+    "file": "sheila-richardson-07.jpg",
+    "entry_index": 10,
+    "status": "matched"
+  },
+  {
+    "original": "Ken Elzinga.jpeg",
+    "file": "ken-elzinga-01.jpg",
+    "entry_index": null,
+    "status": "matched",
+    "attribution": "Kenneth Elzinga"
   }
 ]

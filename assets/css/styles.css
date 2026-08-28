@@ -32,6 +32,12 @@
   --header-bg: var(--color-sage);
   --header-fg: white;
   --page-tint: color-mix(in srgb, var(--color-sage) 12%, white);
+
+  /* --color-cream itself doesn't appear anywhere else on the site (a 6th
+     page color didn't fit 5 pages) — lightened further here for the
+     Memory Wall cards, which need a background/border pale enough not to
+     compete with the photos and prose sitting on it. */
+  --color-cream-light: color-mix(in srgb, var(--color-cream) 40%, white);
 }
 
 /* Base styles */
@@ -485,151 +491,357 @@ img {
   width: 100%;
 }
 
+/* Static fallback angles (widened range) for when JS can't run — main.js
+   overrides these with a randomized rotate() per photo on every stack,
+   including single-photo ones, so no two stacks (and no longer even the
+   front photo) end up perfectly square. */
 .timeline-photos img:nth-child(1) {
-  transform: rotate(-8deg);
+  transform: rotate(-14deg);
   z-index: 1;
 }
 
 .timeline-photos img:nth-child(2) {
-  transform: rotate(6deg);
+  transform: rotate(10deg);
   z-index: 2;
 }
 
 .timeline-photos img:nth-child(3) {
-  transform: rotate(-5deg);
+  transform: rotate(-9deg);
   z-index: 3;
 }
 
 .timeline-photos img:nth-child(4) {
-  transform: rotate(7deg);
+  transform: rotate(12deg);
   z-index: 4;
 }
 
 .timeline-photos img:nth-child(5) {
-  transform: rotate(-4deg);
+  transform: rotate(-7deg);
   z-index: 5;
 }
 
 .timeline-photos img:last-child {
-  transform: rotate(0deg);
   z-index: 6;
 }
 
+/* Styled to match .gallery-lightbox (and .memory-dialog) for consistency
+   — transparent dialog, dark backdrop, white circular close button. Full
+   viewport height with a flex row (reversed so the close button, first
+   in the DOM, renders on the right) — .timeline-dialog-body is a tall,
+   independently-scrolling white panel, close button sitting outside it
+   to the right rather than overlapping the top corner. */
 .timeline-dialog {
+  background: transparent;
   border: 0;
+  height: 100vh;
+  margin: 0 auto;
+  max-height: none;
   max-width: 30rem;
-  padding: 2rem;
+  padding: 0;
+}
+
+/* A class selector like .timeline-dialog beats the UA stylesheet's
+   dialog:not([open]) { display: none } on origin alone, regardless of
+   specificity — so display: flex has to be scoped to [open] itself, or
+   the dialog stays rendered (visible at the bottom of the page) even
+   when closed. */
+.timeline-dialog[open] {
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .timeline-dialog::backdrop {
-  background: rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / 90%);
 }
 
 .timeline-dialog-close {
-  background: none;
+  align-self: flex-start;
+  background: white;
   border: 0;
+  border-radius: 50%;
+  color: var(--color-gray-dd);
   cursor: pointer;
-  float: right;
+  flex: none;
   font-size: 1.5rem;
+  height: 2rem;
   line-height: 1;
+  margin: 0.5rem;
+  width: 2rem;
+}
+
+.timeline-dialog-body {
+  background: white;
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 2rem;
 }
 
 .timeline-dialog-images {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 80vh;
-  overflow-y: auto;
 }
 
 .timeline-dialog-images img {
   width: 100%;
 }
 
-/* Memory Wall */
+/* Memory Wall — single column on mobile, two-per-row from tablet width
+   up, three-per-row past 1350px (see breakpoint below). Explicit
+   fixed-count columns rather than auto-fill so each step is a
+   deliberate, predictable layout instead of however many 18rem tracks
+   happen to fit. */
 .memory-grid {
   display: grid;
-  gap: 2rem;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+@media (min-width: 48rem) {
+  .memory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 56rem) {
+  .memory-grid {
+    gap: 1.25rem;
+  }
+}
+
+/* Grid items default to a content-based automatic minimum width, so a
+   wide photo-only card (.memory-photos-wide, up to 20rem) would otherwise
+   force its whole column wider than the rest — min-width: 0 lets it
+   shrink to the track/gap-constrained column width like every other
+   card, with .memory-photos-wide's own max-width: 100% then keeping the
+   stack itself from overflowing that narrower column. Also the same
+   "real photo" card box (white background, white border, drop shadow)
+   as .card a elsewhere on the site — shows up as the shadow alone against
+   the page's own white background, same as everywhere else it's used. */
+.memory-card {
+  background-color: var(--color-cream-light);
+  border: 0.25rem solid var(--color-cream-light);
+  box-shadow: 0 0.0625rem 0.25rem rgb(0 0 0 / 15%);
+  min-width: 0;
+  padding: 1rem 1rem 1.5rem;
+}
+
+/* Three-per-row past 1350px, same pattern as .photo-gallery ul's
+   breakpoints. */
+@media (min-width: 1350px) {
+  .memory-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 /* Same "real photo" treatment as the Timeline stacks — white border, drop
-   shadow, a slight per-item tilt via nth-child — but laid out as a loose
-   row here rather than an overlapping pile, since a memory card's photos
-   don't have the Timeline's fixed-footprint/overflow problem to solve. */
+   shadow — and now the same fixed-footprint fanned stack too (square,
+   cropped, overlapping), matching the Timeline exactly, for the card
+   teaser. The full-resolution view lives in the popover instead (see
+   .memory-dialog-body .timeline-dialog-images, injected by main.js), as a
+   full-width list rather than a repeat of this small stack. */
 .memory-photos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  height: 8rem;
   margin-block-end: 1rem;
+  position: relative;
+  width: 8rem;
+}
+
+/* Photo-only cards (no written memory to make room for) get a bigger,
+   wider stack instead of the small square one — added by main.js, which
+   is already checking each card for a blockquote. */
+.memory-photos.memory-photos-wide {
+  height: 11rem;
+  margin-block: auto;
+  max-width: 100%;
+  width: 20rem;
 }
 
 .memory-photos .photo-frame {
   border: 0.25rem solid white;
   box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
-  flex: 1 1 8rem;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
+.memory-photos .photo-frame img {
+  object-fit: cover;
+}
+
+/* Static fallback angles (widened range) for when JS can't run — main.js
+   overrides these with a randomized rotate() per photo on every stack,
+   including single-photo ones, so no two stacks (and no longer even the
+   front photo) end up perfectly square. */
 .memory-photos .photo-frame:nth-child(1) {
-  transform: rotate(-3deg);
+  transform: rotate(-11deg);
+  z-index: 1;
 }
 
 .memory-photos .photo-frame:nth-child(2) {
-  transform: rotate(2deg);
+  transform: rotate(8deg);
+  z-index: 2;
 }
 
 .memory-photos .photo-frame:nth-child(3) {
-  transform: rotate(-2deg);
+  transform: rotate(-7deg);
+  z-index: 3;
 }
 
 .memory-photos .photo-frame:nth-child(4) {
-  transform: rotate(3deg);
+  transform: rotate(9deg);
+  z-index: 4;
 }
 
 .memory-photos .photo-frame:nth-child(5) {
-  transform: rotate(-2deg);
+  transform: rotate(-6deg);
+  z-index: 5;
+}
+
+.memory-photos .photo-frame:last-child {
+  z-index: 6;
 }
 
 /* Clips long memories to 6 lines in the grid; .memory-card-clickable (added
    by main.js only to cards that actually have a blockquote — photo-only
    submissions have nothing to expand) opens the full text in a dialog. */
+/* Cards with a photo give most of their space to the stack, so their text
+   clamps tighter (3 lines); photo-less cards have the room to show more
+   (9 lines) before the dialog takes over for the rest. */
+.memory-card {
+  display: flex;
+  flex-direction: column;
+}
+
 .memory-card blockquote {
   -webkit-box-orient: vertical;
   display: -webkit-box;
-  -webkit-line-clamp: 6;
-  line-clamp: 6;
+  -webkit-line-clamp: 9;
+  line-clamp: 9;
   margin: 0;
   overflow: hidden;
 }
 
-.memory-card-clickable {
-  cursor: pointer;
+.memory-card:has(.memory-photos) blockquote {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 
+.memory-card blockquote p {
+  line-height: 1.5;
+  margin: 0 0 0.5em;
+}
+
+.memory-card .memory-name {
+  margin: auto 0 0;
+  padding-block-start: 1em;
+}
+
+.memory-name {
+  color: var(--color-gray);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.memory-card-clickable {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.memory-card-clickable:hover {
+  box-shadow: 0 0.1875rem 0.5rem rgb(0 0 0 / 22%);
+}
+
+/* Styled to match .gallery-lightbox (and .timeline-dialog) for
+   consistency — transparent dialog, dark backdrop, white circular close
+   button. Unlike those, this one holds substantial prose and photos, so
+   it takes the full viewport height instead — a flex row (reversed so
+   the close button, first in the DOM, renders on the right) with
+   .memory-dialog-body as a tall, independently-scrolling white panel and
+   the close button sitting outside it, to the right, rather than
+   overlapping the top corner. */
 .memory-dialog {
+  background: transparent;
   border: 0;
+  height: 100vh;
+  margin: 0 auto;
+  max-height: none;
   max-width: 40rem;
-  padding: 2rem;
+  padding: 0;
+}
+
+/* A class selector like .memory-dialog beats the UA stylesheet's
+   dialog:not([open]) { display: none } on origin alone, regardless of
+   specificity — so display: flex has to be scoped to [open] itself,
+   or the dialog stays rendered (and visible at the bottom of the page)
+   even when closed. */
+.memory-dialog[open] {
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 .memory-dialog::backdrop {
-  background: rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / 90%);
 }
 
 .memory-dialog-close {
-  background: none;
+  align-self: flex-start;
+  background: white;
   border: 0;
+  border-radius: 50%;
+  color: var(--color-gray-dd);
   cursor: pointer;
-  float: right;
+  flex: none;
   font-size: 1.5rem;
+  height: 2rem;
   line-height: 1;
+  margin: 0.5rem;
+  width: 2rem;
+}
+
+.memory-dialog-body {
+  background: white;
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+@media (min-width: 48rem) {
+  .memory-dialog-body {
+    padding: 2rem;
+  }
 }
 
 .memory-dialog-body blockquote {
   margin: 0;
+}
+
+/* The photo list main.js injects at the top of the dialog when a card has
+   photo(s) — reuses .timeline-dialog-images as-is (the same full-width
+   list the Timeline's own popover uses) for a higher-resolution look than
+   the small fanned .memory-photos stack the card teaser shows. */
+.memory-dialog-body .timeline-dialog-images {
+  margin-block-end: 1.5rem;
+}
+
+/* main.js tags portrait photos with .photo-portrait once loaded (their
+   aspect ratio isn't known before then) — a full-width portrait reads as
+   oversized next to the landscape photos in this list. */
+.memory-dialog-body .timeline-dialog-images img.photo-portrait {
+  max-width: 80%;
+}
+
+@media (min-width: 48rem) {
+  .memory-dialog-body .timeline-dialog-images img.photo-portrait {
+    max-width: 60%;
+  }
 }
 
 /* Explore Our Jubilee cards. Flex-basis of ~50% is what caps regular cards
@@ -675,12 +887,21 @@ img {
 .card a {
   background-color: white;
   border: 0.25rem solid white;
-  box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
+  box-shadow: 0 0.0625rem 0.25rem rgb(0 0 0 / 15%);
   color: inherit;
   display: block;
   min-height: 100%;
   padding: 0.5rem 0.5rem 1rem;
   text-decoration: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.card a:hover {
+  box-shadow: 0 0.1875rem 0.5rem rgb(0 0 0 / 22%);
+}
+
+.card a:hover h3 {
+  color: var(--color-denim);
 }
 
 .card .photo-frame {
@@ -749,6 +970,19 @@ img {
 .card p.card-cta {
   font-weight: bold;
   margin-block-start: 0.5rem;
+}
+
+/* Same denim/plum link treatment as .text-section a, for the Memory
+   Wall/Timeline cards' "Read the stories" / "See the timeline" ctas —
+   the cta text itself isn't a link (the whole card is), so the color has
+   to come from the ancestor anchor's own (visited) state instead of
+   :visited on the text directly. */
+.card-wide a .card-cta {
+  color: var(--color-denim);
+}
+
+.card-wide a:visited .card-cta {
+  color: var(--color-plum);
 }
 
 /* Same bold-arrow treatment as .card-cta, for a standalone link (not a
@@ -839,6 +1073,16 @@ main {
   padding: 0 8.333%;
 }
 
+/* A .photo-gallery dropped inline inside prose (Gather's Men's & Women's,
+   Children/Youth, and Accessibility sections, etc.) sits inside a
+   .text-section that already carries the same side padding — without
+   this it'd be inset twice. Pagination/lightbox click-through still comes
+   for free from main.js, which hooks any .photo-gallery. */
+.text-section .photo-gallery {
+  margin-block: 1.5rem;
+  padding: 0;
+}
+
 .page-intro {
   background-color: var(--page-tint);
   margin-block: 0;
@@ -902,8 +1146,12 @@ main {
   width: 8rem;
 }
 
-.text-section > section:not(:first-child) {
+.text-section > section:where(:not(:first-child)) {
   margin-block: 3rem 0;
+}
+
+.text-section h2 + section {
+  margin-block-start: 0;
 }
 
 .text-section h2 {
@@ -988,6 +1236,23 @@ main {
   font-size: 0.75rem;
   line-height: 1.5;
   margin: 0.5rem 0 0;
+}
+
+/* A single photo presented on its own after the gallery grid (currently
+   just Glorify's closing shot of the Lord's Table) — same "real photo"
+   white-border/shadow treatment as .card and .memory-card, sized up and
+   centered rather than packed into the grid, for a deliberate closing
+   note instead of just another thumbnail. */
+.closing-photo {
+  background-color: var(--color-gray-dd);
+  margin: 3rem auto -3rem;
+  padding: 3rem 8.333%;
+}
+
+.closing-photo figcaption {
+  color: var(--color-gray-ll);
+  font-size: 0.875rem;
+  margin: 0.75rem 0 0;
 }
 
 /* Media queries */

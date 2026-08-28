@@ -4,7 +4,7 @@
    Design/CSS work happens from here — see class names used in the HTML:
      .site-header .site-nav .nav-list
      .hero .card-grid .card-row .card .photo-frame
-     .photo-gallery .carousel-viewport .carousel-track .carousel-controls .photo-gallery-item
+     .photo-gallery .photo-gallery-item .gallery-pagination .gallery-lightbox
      .chapter .testimonial
      .timeline-list .timeline-item .timeline-photos
      .memory-card .memory-grid .memory-dialog
@@ -14,7 +14,7 @@
 :root {
   --color-sage: #619080;
   --color-dusty-rose: #c8a2a8;
-  --color-cream: #f1ede1; /* was given as #flede1 — 'l' isn't a hex digit, read as #f1ede1 */
+  --color-cream: #f1ede1;
   --color-plum: #5e4962;
   --color-denim: #495d94;
   --color-mint: #9ac8b9;
@@ -89,7 +89,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 2.5rem 8.3333% 1rem;
+  padding: 1rem 8.3333% 0.5rem;
   text-align: center;
 }
 
@@ -140,7 +140,7 @@ img {
   display: block;
   height: auto;
   margin-inline: auto;
-  max-width: 20rem;
+  max-width: 14rem;
   width: 80%;
 }
 
@@ -173,7 +173,7 @@ img {
 
 @media (min-width: 48rem) {
   .nav-list {
-    font-size: 1.333rem;
+    font-size: 1.125rem;
     gap: 3rem;
     justify-content: center;
     max-width: none;
@@ -196,7 +196,7 @@ img {
 }
 
 .nav-list a[aria-current='page'] {
-  border-bottom-color: currentColor;
+  border-bottom-color: rgba(255 255 255 / 0.5);
   font-weight: bold;
 }
 
@@ -208,60 +208,64 @@ img {
 }
 
 .hero-title,
-.hero-subtitle {
+.hero-pretitle {
   display: block;
   margin: 0;
   text-align: center;
 }
 
-.hero-title {
-  --color-sage: #619080;
-  --color-dusty-rose: #c8a2a8;
-  --color-cream: #f1ede1; /* was given as #flede1 — 'l' isn't a hex digit, read as #f1ede1 */
-  --color-plum: #5e4962;
-  --color-denim: #495d94;
-  --color-mint: #9ac8b9;
-
+.hero-pretitle {
   color: var(--color-sage);
   font-family: var(--font-body);
-  font-size: 2.5rem;
-  line-height: 1.1;
-  margin-block-end: 0.25em;
+  font-size: 1.25rem;
+  margin-block-end: 0.5rem;
 }
 
-@media (min-width: 48rem) {
+.hero-title {
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+@media (min-width: 32rem) {
+  .hero-pretitle {
+    font-size: 1.5rem;
+  }
+
   .hero-title {
     font-size: 3rem;
   }
 }
 
-
-/* Carousel — functional minimum only; visual design is yours.
-   main.js injects .carousel-viewport (clips) around the gallery <ul>
-   (.carousel-track), and .carousel-controls (prev/next/count) after it.
-   Slides sit side by side in a flex row; a single translateX on the track
-   positions the active one and follows the pointer live while dragging. */
-.carousel-viewport {
-  overflow: hidden;
+@media (min-width: 48rem) {
+  .hero-title {
+    font-size: 4rem;
+  }
 }
 
-.carousel-track {
-  cursor: pointer;
-  display: flex;
+@media (min-width: 64rem) {
+  .hero-title {
+    font-size: 3.25rem;
+  }
+}
+
+/* Photo galleries (Home/Gather/Grow/Go/Glorify) — a plain responsive grid,
+   same auto-fill pattern as .memory-grid, rather than a one-at-a-time
+   carousel: every photo is visible at once and each cell stays a fixed,
+   modest size regardless of viewport height, so there's no single
+   full-width image that can end up too tall on a short viewport. */
+.photo-gallery ul {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
   list-style: none;
   margin: 0;
   padding: 0;
-  touch-action: pan-y; /* let vertical page scroll through; horizontal drag drives the swipe */
-  transition: transform 0.25s ease;
 }
 
-.carousel-track.is-dragging {
-  transition: none;
-}
-
-.carousel-track > * {
-  flex: 0 0 100%;
-  max-width: 100%;
+@media (min-width: 48rem) {
+  .photo-gallery ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* Every gallery/card photo sits in a fixed-aspect box, letterboxed in gray
@@ -283,16 +287,99 @@ img {
 .photo-frame img {
   height: 100%;
   object-fit: contain;
-  -webkit-user-drag: none; /* stop the browser's native image drag from hijacking our pointer drag */
+  -webkit-user-drag: none; /* stop the browser's native image drag from interfering with clickable photos (Memory Wall, Timeline) */
   user-select: none;
   width: 100%;
 }
 
-.carousel-controls {
+/* Gallery thumbnails specifically (not Cards/Memory Wall, which keep the
+   base .photo-frame's letterboxed "contain") fill their box edge to edge,
+   cropping instead — main.js makes every one of these clickable, opening
+   .gallery-lightbox where the whole (uncropped) photo is shown instead. */
+.photo-gallery .photo-frame img {
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* .gallery-pagination (prev/next/count) is injected by main.js after the
+   gallery's <ul> only when there's more than one page of PAGE_SIZE photos
+   — it pages through the grid (hiding/showing whole photos via the native
+   hidden attribute) rather than scrolling one image at a time. */
+.gallery-pagination {
   align-items: center;
   display: flex;
   gap: 1rem;
   justify-content: center;
+  margin-block-start: 1rem;
+}
+
+.gallery-prev,
+.gallery-next {
+  background: white;
+  border: 1px solid var(--color-gray-ll);
+  border-radius: 50%;
+  cursor: pointer;
+  height: 40px;
+  padding: 0;
+  width: 40px;
+}
+
+.gallery-prev:hover,
+.gallery-next:hover {
+  background-color: var(--color-sage);
+  border-color: var(--color-sage);
+  color: white;
+}
+
+.gallery-count {
+  color: var(--color-gray);
+  margin: 0;
+}
+
+/* The lightbox dialog main.js opens on click — sized to show the whole
+   photo as large as the viewport allows (max-width/max-height on the
+   image, dialog auto-sizes to fit around it) rather than the grid's
+   cropped "cover" thumbnails. */
+.gallery-lightbox {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.gallery-lightbox::backdrop {
+  background: rgb(0 0 0 / 90%);
+}
+
+.gallery-lightbox-image {
+  display: block;
+  height: auto;
+  margin-inline: auto;
+  max-height: 85vh;
+  max-width: 95vw;
+  width: auto;
+}
+
+.gallery-lightbox-caption {
+  color: white;
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
+
+.gallery-lightbox-close {
+  background: white;
+  border: 0;
+  border-radius: 50%;
+  color: var(--color-gray-dd);
+  cursor: pointer;
+  float: right;
+  font-size: 1.5rem;
+  height: 2rem;
+  line-height: 1;
+  margin: 0.5rem;
+  position: relative;
+  width: 2rem;
+  z-index: 1;
 }
 
 /* .timeline-scroller / .timeline-sticky: normal vertical page scroll drives
@@ -664,11 +751,49 @@ main {
 .page-intro {
   background-color: var(--page-tint);
   margin-block: 0;
+  overflow: hidden;
   padding-block: 3rem;
+  position: relative;
+  text-align: center;
+  text-wrap: balance;
 }
 
-.text-section {
-  padding-inline: 16.666%;
+.page-title {
+  font-size: 3rem;
+  line-height: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.page-eyebrow {
+  bottom: 0;
+  color: rgba(0, 0, 0, 0.05);
+  font-size: 10rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 -0.0625em -0.125em 0;
+  position: absolute;
+  right: 0;
+}
+
+.page-subtitle {
+  font-weight: 400;
+}
+
+.page-intro blockquote {
+  font-style: italic;
+  margin: 0;
+}
+
+.page-intro blockquote footer {
+  color: var(--color-gray);
+  font-size: 0.875rem;
+}
+
+@media (min-width: 48rem) {
+  .text-section {
+    padding-inline: 16.666%;
+  }
 }
 
 .text-section + .text-section {
@@ -684,6 +809,20 @@ main {
   top: 0;
   left: 50%;
   width: 10rem;
+}
+
+.text-section blockquote {
+  border-left: 0.25rem solid var(--color-dusty-rose);
+  font-style: italic;
+  margin-inline-start: 0;
+  padding-inline-start: 1.5rem;
+}
+
+.photo-gallery-item figcaption {
+  color: var(--color-gray);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin: 0.5rem 0 0;
 }
 
 /* Media queries */

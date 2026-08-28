@@ -308,9 +308,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var controls = document.createElement('div');
     controls.className = 'gallery-pagination';
     controls.innerHTML =
-      '<button type="button" class="gallery-prev" aria-label="Previous photos">&lsaquo;</button>' +
+      '<button type="button" class="gallery-prev" aria-label="Previous photos">&larr;</button>' +
       '<p class="gallery-count" aria-live="polite"></p>' +
-      '<button type="button" class="gallery-next" aria-label="Next photos">&rsaquo;</button>';
+      '<button type="button" class="gallery-next" aria-label="Next photos">&rarr;</button>';
     list.insertAdjacentElement('afterend', controls);
 
     var countEl = controls.querySelector('.gallery-count');

@@ -188,6 +188,10 @@ img {
   text-decoration: none;
 }
 
+.nav-list a:hover {
+  border-bottom-color: rgba(255 255 255 / 0.2);
+}
+
 @media (min-width: 48rem) {
   .nav-list a {
     border-bottom-width: 0.5rem;
@@ -222,7 +226,7 @@ img {
 }
 
 .hero-title {
-  font-size: 2.25rem;
+  font-size: 3.6666rem;
   line-height: 1.1;
 }
 
@@ -242,12 +246,6 @@ img {
   }
 }
 
-@media (min-width: 64rem) {
-  .hero-title {
-    font-size: 3.25rem;
-  }
-}
-
 /* Photo galleries (Home/Gather/Grow/Go/Glorify) — a plain responsive grid,
    same auto-fill pattern as .memory-grid, rather than a one-at-a-time
    carousel: every photo is visible at once and each cell stays a fixed,
@@ -255,7 +253,7 @@ img {
    full-width image that can end up too tall on a short viewport. */
 .photo-gallery ul {
   display: grid;
-  gap: 1.5rem;
+  gap: 0.75rem;
   grid-template-columns: repeat(2, 1fr);
   list-style: none;
   margin: 0;
@@ -265,6 +263,11 @@ img {
 @media (min-width: 48rem) {
   .photo-gallery ul {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 56rem) {
+  .photo-gallery ul {
+    gap: 1.25rem;
   }
 }
 
@@ -319,9 +322,11 @@ img {
   border: 1px solid var(--color-gray-ll);
   border-radius: 50%;
   cursor: pointer;
-  height: 40px;
+  font-family: var(--color-body);
+  font-size: 1rem;
+  height: 50px;
   padding: 0;
-  width: 40px;
+  width: 50px;
 }
 
 .gallery-prev:hover,
@@ -627,26 +632,34 @@ img {
   margin: 0;
 }
 
-/* Explore Our Jubilee cards — Gather/Grow/Go/Glorify. Flex-basis of ~50% is
-   what caps this at two per row (not just "however many fit at
+/* Explore Our Jubilee cards. Flex-basis of ~50% is what caps regular cards
+   (Gather/Grow/Go/Glorify) at two per row (not just "however many fit at
    --card-min-width", which was landing on three) — it drops to one column
-   once --card-min-width can't fit two side by side. (Memory Wall and
-   Timeline moved out of this grid into their own teaser sections below it.) */
+   once --card-min-width can't fit two side by side. Memory Wall/Timeline
+   (.card-wide) always take the full row instead — see below. */
 .card-grid {
   --card-min-width: 14rem;
 }
 
 .card-row {
+  align-items: stretch;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 2rem 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.card-row + .card-row {
+.card-row--secondary {
+  gap: 1rem;
   margin-block-start: 2rem;
+}
+
+@media (min-width: 56rem) {
+  .card-row--secondary {
+    padding-inline: 10%;
+  }
 }
 
 .card {
@@ -665,6 +678,7 @@ img {
   box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 25%);
   color: inherit;
   display: block;
+  min-height: 100%;
   padding: 0.5rem 0.5rem 1rem;
   text-decoration: none;
 }
@@ -673,16 +687,93 @@ img {
   margin-block-end: 1rem;
 }
 
+/* Cards fill their photo edge to edge (cropping instead of the base
+   .photo-frame's letterboxed "contain") — same treatment as the gallery
+   thumbnails. */
+.card .photo-frame img {
+  object-fit: cover;
+}
+
 .card h3 {
   font-size: 1.5rem;
   line-height: 1.1;
-  margin-block: 0 0.5rem;
+  margin-block: 0 0.25rem;
 }
 
 .card p {
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
+}
+
+/* .card-wide (Memory Wall, Timeline): always the full row, and — at 32rem
+   and up — image on the left, text on the right, via a wrapper around the
+   heading/description/CTA so the <a> only has two flex children (the
+   .photo-frame and .card-text) to lay out side by side. Stays stacked
+   below that width, same as a regular card, so the row doesn't get
+   cramped on narrow screens. */
+.card-wide {
+  flex-basis: 100%;
+}
+
+.card-wide .photo-frame {
+  margin-block-end: 1rem;
+}
+
+@media (min-width: 32rem) {
+  .card-wide h3 {
+    font-size: 2rem;
+  }
+
+  .card-wide a {
+    align-items: center;
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .card-wide .photo-frame {
+    flex: 0 0 40%;
+    margin-block-end: 0;
+  }
+
+  .card-wide .card-text {
+    flex: 1 1 auto;
+  }
+
+  .card-wide .card-text p {
+    max-width: 45ch;
+    text-wrap: pretty;
+  }
+}
+
+.card p.card-cta {
+  font-weight: bold;
+  margin-block-start: 0.5rem;
+}
+
+/* Same bold-arrow treatment as .card-cta, for a standalone link (not a
+   whole clickable card) elsewhere in the copy — e.g. Grow's link to the
+   WTW studies list. Explicit (not inherited) color so it matches
+   .text-section a below even when used outside a .text-section, like the
+   "Back to Grow" link on the studies list page itself. */
+.link-arrow {
+  color: var(--color-denim);
+}
+
+.link-arrow:visited {
+  color: var(--color-plum);
+}
+
+/* Prose links get a distinct color from the palette (visited state a
+   second, so a reader can tell what they've already read) — scoped to
+   .text-section rather than sitewide so nav/card/footer links (which
+   already have their own deliberate treatments) aren't affected. */
+.text-section a {
+  color: var(--color-denim);
+}
+
+.text-section a:visited {
+  color: var(--color-plum);
 }
 
 /* Footer */
@@ -804,11 +895,72 @@ main {
 .text-section + .text-section::before {
   border-block-start: 0.25rem solid var(--color-gray-ll);
   content: '';
-  margin-inline-start: -5rem;
+  left: 50%;
   position: absolute;
   top: 0;
-  left: 50%;
-  width: 10rem;
+  transform: translateX(-50%);
+  width: 8rem;
+}
+
+.text-section > section:not(:first-child) {
+  margin-block: 3rem 0;
+}
+
+.text-section h2 {
+  font-size: 2rem;
+  margin-block: 2.5rem 0.5rem;
+}
+
+/* WTW study list (wtw-studies.html) — .studies-table-wrap scrolls
+   horizontally on narrow screens instead of squeezing the table (5
+   columns, one of them long book/study titles) down to unreadable widths.
+   Same horizontal padding as .photo-gallery/.card-grid rather than
+   .text-section's, which is far too narrow for a table this wide. */
+.studies-table-section {
+  margin-block: 3rem;
+  padding: 0 8.333%;
+}
+
+.studies-table-wrap {
+  overflow-x: auto;
+}
+
+.studies-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.studies-table th,
+.studies-table td {
+  border-block-end: 1px solid var(--color-gray-ll);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.studies-table td:nth-child(4) {
+  white-space: normal;
+}
+
+.studies-table th {
+  color: var(--color-gray);
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.text-section h3 {
+  font-size: 1.5rem;
+  margin-block: 2.5rem 0.25rem;
+}
+
+.text-section h2:first-child,
+.text-section h3:first-child {
+  margin-block-start: 0;
+}
+
+.text-section p {
+  margin-block: 0 1.25em;
 }
 
 .text-section blockquote {
@@ -816,6 +968,19 @@ main {
   font-style: italic;
   margin-inline-start: 0;
   padding-inline-start: 1.5rem;
+}
+
+.text-section blockquote p {
+  margin-block-end: 0.5rem;
+}
+
+.text-section blockquote p + p {
+  margin-block-start: 1rem;
+}
+
+.text-section blockquote footer {
+  color: var(--color-gray);
+  font-size: 0.875rem;
 }
 
 .photo-gallery-item figcaption {

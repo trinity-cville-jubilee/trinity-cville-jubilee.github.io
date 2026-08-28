@@ -11,6 +11,101 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Home page photo showcase: the three slots (one large, two small — see
+// .photo-showcase in the CSS for the asymmetrical layout) cycle through
+// further groups of three photos from the pool below, five seconds per
+// group, cross-fading each slot's <img> independently (fade out, swap
+// src once the next photo has actually loaded, fade back in — avoids a
+// pop to a half-loaded image on a slow connection). The pool starts with
+// a hand-picked sequence, then continues through the rest of the home
+// gallery's photos in their original order, looping once it runs out.
+// The initial HTML already shows group 0, so cycling starts from group 1.
+// Skipped entirely under prefers-reduced-motion.
+
+document.addEventListener('DOMContentLoaded', function () {
+  var slots = document.querySelectorAll('.photo-showcase-slot img');
+  if (!slots.length) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var pool = [
+    { src: 'assets/images/home/gallery/chris-and-christen.jpg', alt: 'Chris and Christen Colquitt' },
+    { src: 'assets/images/home/gallery/gallery-07.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-13.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-01.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-05.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-08.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-04.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/walter-kim.jpg', alt: 'Walter Kim' },
+    { src: 'assets/images/home/gallery/gallery-09.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/archive-scan-09.jpg', alt: 'An archival photo from Trinity’s history' },
+    { src: 'assets/images/home/gallery/tpc-homecoming-05.jpg', alt: 'TPC Homecoming' },
+    { src: 'assets/images/home/gallery/tpc-homecoming-01.jpg', alt: 'TPC Homecoming' },
+    { src: 'assets/images/home/gallery/gallery-02.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-03.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/john-and-kathy-hall.jpg', alt: 'John and Kathy Hall' },
+    { src: 'assets/images/home/gallery/john-hall.jpg', alt: 'John Hall' },
+    { src: 'assets/images/home/gallery/gallery-06.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/easter-sunday-2014.jpg', alt: 'Easter Sunday, 2014' },
+    { src: 'assets/images/home/gallery/gallery-10.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-11.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-12.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-14.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/evening-worship-2024.jpg', alt: 'Evening worship, January 2024' },
+    { src: 'assets/images/home/gallery/gallery-15.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-16.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-17.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-18.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/gallery-19.jpg', alt: 'Trinity Presbyterian Church congregation' },
+    { src: 'assets/images/home/gallery/tpc-homecoming-06.jpg', alt: 'TPC Homecoming' },
+    { src: 'assets/images/home/gallery/tpc-homecoming-02.jpg', alt: 'TPC Homecoming' },
+  ];
+
+  var groupCount = Math.floor(pool.length / slots.length);
+  if (groupCount <= 1) return;
+
+  var FADE_MS = 600;
+  var INTERVAL_MS = 12000;
+  var STAGGER_MS = INTERVAL_MS / slots.length;
+  var INITIAL_DELAY_MS = 4000;
+
+  // Each slot runs its own independent timer, offset from the others by
+  // STAGGER_MS, rather than one shared interval advancing all three at
+  // once — reads as three photos each drifting at their own pace instead
+  // of the whole showcase visibly "changing" in unison every 5 seconds.
+  // A slot still only ever shows the photo assigned to its position
+  // within a group (pool[groupIndex * slots.length + slotIndex]); only
+  // the timing is staggered, not which photos pair up. INITIAL_DELAY_MS
+  // gives the page a settled moment before anything moves, and START_ORDER
+  // has one of the small photos change first rather than the large one —
+  // a change in a small corner reads as a quieter opening move than the
+  // big photo suddenly swapping.
+  var START_ORDER = [1, 2, 0];
+
+  slots.forEach(function (img, slotIndex) {
+    var slotGroupIndex = 0;
+    var startPosition = START_ORDER.indexOf(slotIndex);
+
+    function advance() {
+      slotGroupIndex = (slotGroupIndex + 1) % groupCount;
+      var photo = pool[slotGroupIndex * slots.length + slotIndex];
+      var preload = new Image();
+      preload.onload = function () {
+        img.classList.add('is-fading');
+        setTimeout(function () {
+          img.src = photo.src;
+          img.alt = photo.alt;
+          img.classList.remove('is-fading');
+        }, FADE_MS);
+      };
+      preload.src = photo.src;
+      setTimeout(advance, INTERVAL_MS);
+    }
+
+    setTimeout(advance, INITIAL_DELAY_MS + startPosition * STAGGER_MS);
+  });
+});
+
 // Tags portrait (narrower-than-tall) photos in the Memory Wall popover
 // with .photo-portrait so CSS can cap their width — a full-width portrait
 // photo in that list reads as oversized next to the landscape ones.

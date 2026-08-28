@@ -3,12 +3,14 @@
 document.addEventListener('DOMContentLoaded', function () {
   var currentPage = location.pathname.split('/').pop() || 'index.html';
 
-  document.querySelectorAll('.site-nav a, .footer-nav a').forEach(function (link) {
-    var linkPage = link.getAttribute('href');
-    if (linkPage === currentPage) {
-      link.setAttribute('aria-current', 'page');
-    }
-  });
+  document
+    .querySelectorAll('.site-nav a, .footer-nav a')
+    .forEach(function (link) {
+      var linkPage = link.getAttribute('href');
+      if (linkPage === currentPage) {
+        link.setAttribute('aria-current', 'page');
+      }
+    });
 });
 
 // Home page photo showcase: the three slots (one large, two small — see
@@ -26,40 +28,153 @@ document.addEventListener('DOMContentLoaded', function () {
   var slots = document.querySelectorAll('.photo-showcase-slot img');
   if (!slots.length) return;
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
   var pool = [
-    { src: 'assets/images/home/gallery/chris-and-christen.jpg', alt: 'Chris and Christen Colquitt' },
-    { src: 'assets/images/home/gallery/gallery-07.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-13.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-01.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-05.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-08.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-04.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/walter-kim.jpg', alt: 'Walter Kim' },
-    { src: 'assets/images/home/gallery/gallery-09.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/archive-scan-09.jpg', alt: 'An archival photo from Trinity’s history' },
-    { src: 'assets/images/home/gallery/tpc-homecoming-05.jpg', alt: 'TPC Homecoming' },
-    { src: 'assets/images/home/gallery/tpc-homecoming-01.jpg', alt: 'TPC Homecoming' },
-    { src: 'assets/images/home/gallery/gallery-02.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-03.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/john-and-kathy-hall.jpg', alt: 'John and Kathy Hall' },
-    { src: 'assets/images/home/gallery/john-hall.jpg', alt: 'John Hall' },
-    { src: 'assets/images/home/gallery/gallery-06.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/easter-sunday-2014.jpg', alt: 'Easter Sunday, 2014' },
-    { src: 'assets/images/home/gallery/gallery-10.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-11.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-12.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-14.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/evening-worship-2024.jpg', alt: 'Evening worship, January 2024' },
-    { src: 'assets/images/home/gallery/gallery-15.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-16.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-17.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-18.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/gallery-19.jpg', alt: 'Trinity Presbyterian Church congregation' },
-    { src: 'assets/images/home/gallery/tpc-homecoming-06.jpg', alt: 'TPC Homecoming' },
-    { src: 'assets/images/home/gallery/tpc-homecoming-02.jpg', alt: 'TPC Homecoming' },
+    {
+      src: 'assets/images/home/gallery/chris-and-christen.jpg',
+      alt: 'Chris and Christen Colquitt',
+      pos: 'center 27%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-07.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-13.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 80%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-01.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: '75% center',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-05.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-08.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 25%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-04.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/walter-kim.jpg',
+      alt: 'Walter Kim',
+      pos: 'center 60%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-09.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/archive-scan-09.jpg',
+      alt: 'An archival photo from Trinity’s history',
+    },
+    {
+      src: 'assets/images/home/gallery/tpc-homecoming-05.jpg',
+      alt: 'TPC Homecoming',
+      pos: 'center 30%',
+    },
+    {
+      src: 'assets/images/home/gallery/tpc-homecoming-01.jpg',
+      alt: 'TPC Homecoming',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-02.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 10%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-03.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/john-and-kathy-hall.jpg',
+      alt: 'John and Kathy Hall',
+    },
+    {
+      src: 'assets/images/home/gallery/john-hall.jpg',
+      alt: 'John Hall',
+      pos: 'center 10%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-06.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/easter-sunday-2014.jpg',
+      alt: 'Easter Sunday, 2014',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-10.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 15%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-11.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-14.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/evening-worship-2024.jpg',
+      alt: 'Evening worship, January 2024',
+      pos: 'center 36%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-15.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 14%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-16.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-17.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-18.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+      pos: 'center 28%',
+    },
+    {
+      src: 'assets/images/home/gallery/gallery-19.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
+    {
+      src: 'assets/images/home/gallery/tpc-homecoming-06.jpg',
+      alt: 'TPC Homecoming',
+      pos: 'center 16%',
+    },
+    {
+      src: 'assets/images/home/gallery/tpc-homecoming-02.jpg',
+      alt: 'TPC Homecoming',
+    },
+    // Moved out of its original group (was alongside gallery-10/gallery-11,
+    // too similar to them) — into the last group instead.
+    {
+      src: 'assets/images/home/gallery/gallery-12.jpg',
+      alt: 'Trinity Presbyterian Church congregation',
+    },
   ];
+
+  // The initial markup shows group 0 (pool[0..slots.length - 1]) directly
+  // in the HTML — apply those photos' focal points here too, so pos only
+  // ever has to be edited in one place instead of also being hardcoded
+  // (and liable to drift out of sync) as an inline style in index.html.
+  slots.forEach(function (img, slotIndex) {
+    img.style.objectPosition = pool[slotIndex].pos || '';
+  });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   var groupCount = Math.floor(pool.length / slots.length);
   if (groupCount <= 1) return;
@@ -85,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
   slots.forEach(function (img, slotIndex) {
     var slotGroupIndex = 0;
     var startPosition = START_ORDER.indexOf(slotIndex);
+    var timeoutId;
 
     function advance() {
       slotGroupIndex = (slotGroupIndex + 1) % groupCount;
@@ -95,14 +211,26 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
           img.src = photo.src;
           img.alt = photo.alt;
+          // Not every photo needs a focal-point override — the ones that
+          // don't just fall back to object-fit: cover's default centering.
+          img.style.objectPosition = photo.pos || '';
           img.classList.remove('is-fading');
         }, FADE_MS);
       };
       preload.src = photo.src;
-      setTimeout(advance, INTERVAL_MS);
+      timeoutId = setTimeout(advance, INTERVAL_MS);
     }
 
-    setTimeout(advance, INITIAL_DELAY_MS + startPosition * STAGGER_MS);
+    // Clicking a photo jumps that slot to the next one right away,
+    // cancelling its pending automatic advance so it doesn't also fire a
+    // moment later — the slot's timer effectively just restarts from here.
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', function () {
+      clearTimeout(timeoutId);
+      advance();
+    });
+
+    timeoutId = setTimeout(advance, INITIAL_DELAY_MS + startPosition * STAGGER_MS);
   });
 });
 
@@ -115,7 +243,11 @@ document.addEventListener('DOMContentLoaded', function () {
 function markPortraitPhotos(container) {
   container.querySelectorAll('img').forEach(function (img) {
     function check() {
-      if (img.naturalWidth && img.naturalHeight && img.naturalWidth / img.naturalHeight < 1) {
+      if (
+        img.naturalWidth &&
+        img.naturalHeight &&
+        img.naturalWidth / img.naturalHeight < 1
+      ) {
         img.classList.add('photo-portrait');
       }
     }
@@ -154,9 +286,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var body = dialog.querySelector('.memory-dialog-body');
 
-  dialog.querySelector('.memory-dialog-close').addEventListener('click', function () {
-    dialog.close();
-  });
+  dialog
+    .querySelector('.memory-dialog-close')
+    .addEventListener('click', function () {
+      dialog.close();
+    });
 
   dialog.addEventListener('click', function (event) {
     if (event.target === dialog) dialog.close();
@@ -167,7 +301,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   cards.forEach(function (card) {
     var blockquote = card.querySelector('blockquote');
-    var images = Array.prototype.slice.call(card.querySelectorAll('.memory-photos img'));
+    var images = Array.prototype.slice.call(
+      card.querySelectorAll('.memory-photos img'),
+    );
     if (!blockquote && !images.length) return;
 
     var nameEl = card.querySelector('.memory-name');
@@ -180,7 +316,11 @@ document.addEventListener('DOMContentLoaded', function () {
     card.classList.add('memory-card-clickable');
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', 'Read full memory' + (nameEl ? ' from ' + nameEl.textContent.replace(/^—\s*/, '') : ''));
+    card.setAttribute(
+      'aria-label',
+      'Read full memory' +
+        (nameEl ? ' from ' + nameEl.textContent.replace(/^—\s*/, '') : ''),
+    );
 
     var index = openers.length;
 
@@ -195,7 +335,13 @@ document.addEventListener('DOMContentLoaded', function () {
           '<div class="timeline-dialog-images">' +
           images
             .map(function (img) {
-              return '<img src="' + img.src + '" alt="' + img.alt.replace(/"/g, '&quot;') + '">';
+              return (
+                '<img src="' +
+                img.src +
+                '" alt="' +
+                img.alt.replace(/"/g, '&quot;') +
+                '">'
+              );
             })
             .join('') +
           '</div>';
@@ -249,7 +395,10 @@ document.addEventListener('DOMContentLoaded', function () {
   var stacks = document.querySelectorAll('.timeline-photos, .memory-photos');
   stacks.forEach(function (stack) {
     var items = stack.querySelectorAll(':scope > img, :scope > .photo-frame');
-    var range = stack.classList.contains('memory-photos-wide') || items.length === 1 ? 8 : 24;
+    var range =
+      stack.classList.contains('memory-photos-wide') || items.length === 1
+        ? 8
+        : 24;
     items.forEach(function (item) {
       var angle = (Math.random() * range - range / 2).toFixed(1);
       item.style.transform = 'rotate(' + angle + 'deg)';
@@ -266,7 +415,10 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!nav) return;
 
   function setNavHeight() {
-    document.documentElement.style.setProperty('--nav-height', nav.offsetHeight + 'px');
+    document.documentElement.style.setProperty(
+      '--nav-height',
+      nav.offsetHeight + 'px',
+    );
   }
 
   setNavHeight();
@@ -359,9 +511,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.appendChild(dialog);
     imagesEl = dialog.querySelector('.timeline-dialog-images');
 
-    dialog.querySelector('.timeline-dialog-close').addEventListener('click', function () {
-      dialog.close();
-    });
+    dialog
+      .querySelector('.timeline-dialog-close')
+      .addEventListener('click', function () {
+        dialog.close();
+      });
     dialog.addEventListener('click', function (event) {
       if (event.target === dialog) dialog.close();
     });
@@ -382,7 +536,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     stack.tabIndex = 0;
     stack.setAttribute('role', 'button');
-    stack.setAttribute('aria-label', images.length > 1 ? 'View all ' + images.length + ' photos' : 'View photo');
+    stack.setAttribute(
+      'aria-label',
+      images.length > 1
+        ? 'View all ' + images.length + ' photos'
+        : 'View photo',
+    );
 
     var index = openers.length;
 
@@ -391,7 +550,13 @@ document.addEventListener('DOMContentLoaded', function () {
       currentIndex = index;
       imagesEl.innerHTML = images
         .map(function (img) {
-          return '<img src="' + img.src + '" alt="' + img.alt.replace(/"/g, '&quot;') + '">';
+          return (
+            '<img src="' +
+            img.src +
+            '" alt="' +
+            img.alt.replace(/"/g, '&quot;') +
+            '">'
+          );
         })
         .join('');
       dialog.showModal();
@@ -446,9 +611,11 @@ document.addEventListener('DOMContentLoaded', function () {
     lightboxImg = lightbox.querySelector('.gallery-lightbox-image');
     lightboxCaption = lightbox.querySelector('.gallery-lightbox-caption');
 
-    lightbox.querySelector('.gallery-lightbox-close').addEventListener('click', function () {
-      lightbox.close();
-    });
+    lightbox
+      .querySelector('.gallery-lightbox-close')
+      .addEventListener('click', function () {
+        lightbox.close();
+      });
     lightbox.addEventListener('click', function (event) {
       if (event.target === lightbox) lightbox.close();
     });
@@ -475,7 +642,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
 
     var target = event.target;
-    var isEditable = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+    var isEditable =
+      target &&
+      (target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable);
     if (isEditable) return;
 
     var delta = event.key === 'ArrowLeft' ? -1 : 1;
@@ -496,14 +667,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!items.length) return;
 
     var images = items
-      .map(function (item) { return item.querySelector('img'); })
+      .map(function (item) {
+        return item.querySelector('img');
+      })
       .filter(Boolean);
 
     images.forEach(function (img, i) {
       img.tabIndex = 0;
       img.setAttribute('role', 'button');
-      img.setAttribute('aria-label', 'View larger photo: ' + (img.alt || 'photo'));
-      img.addEventListener('click', function () { openLightbox(images, i); });
+      img.setAttribute(
+        'aria-label',
+        'View larger photo: ' + (img.alt || 'photo'),
+      );
+      img.addEventListener('click', function () {
+        openLightbox(images, i);
+      });
       img.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
@@ -537,11 +715,19 @@ document.addEventListener('DOMContentLoaded', function () {
       items.forEach(function (item, idx) {
         item.hidden = idx < page * PAGE_SIZE || idx >= (page + 1) * PAGE_SIZE;
       });
-      countEl.textContent = (page + 1) + ' of ' + pageCount;
+      countEl.textContent = page + 1 + ' of ' + pageCount;
     }
 
-    controls.querySelector('.gallery-prev').addEventListener('click', function () { showPage(-1); });
-    controls.querySelector('.gallery-next').addEventListener('click', function () { showPage(1); });
+    controls
+      .querySelector('.gallery-prev')
+      .addEventListener('click', function () {
+        showPage(-1);
+      });
+    controls
+      .querySelector('.gallery-next')
+      .addEventListener('click', function () {
+        showPage(1);
+      });
 
     currentShowPage = showPage;
     showPage(0);

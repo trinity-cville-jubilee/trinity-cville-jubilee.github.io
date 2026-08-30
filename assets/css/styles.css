@@ -40,6 +40,11 @@
   --color-cream-light: color-mix(in srgb, var(--color-cream) 40%, white);
 }
 
+::selection {
+  background-color: var(--color-sage);
+  color: white;
+}
+
 /* Base styles */
 *,
 *::before,
@@ -1133,6 +1138,10 @@ img {
 .footer-nav a {
   color: inherit;
   text-decoration: none;
+}
+
+.footer-nav a:hover {
+  text-decoration: underline;
 }
 
 .footer-meta {

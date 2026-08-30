@@ -31,66 +31,66 @@ document.addEventListener('DOMContentLoaded', function () {
   var pool = [
     {
       src: 'assets/images/home/gallery/chris-and-christen.jpg',
-      alt: 'Chris and Christen Colquitt',
+      alt: 'Pastor Chris Colquitt with his wife, Christen.',
       pos: 'center 27%',
     },
     {
       src: 'assets/images/home/gallery/gallery-07.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'The entrance to Trinity Presbyterian Church, after recent exterior renovations.',
     },
     {
       src: 'assets/images/home/gallery/gallery-13.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'The sanctuary at Trinity Presbyterian Church, featuring the red-orange chairs that served us for decades.',
       pos: 'center 80%',
     },
     {
       src: 'assets/images/home/gallery/gallery-01.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'An early photo of the Trinity Presbyterian Church building, before the additions.',
       pos: '75% center',
     },
     {
       src: 'assets/images/home/gallery/gallery-05.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Tom Darnell fences the table before communion.',
     },
     {
       src: 'assets/images/home/gallery/gallery-08.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Trinity pastor giving an exhortation',
       pos: 'center 25%',
     },
     {
       src: 'assets/images/home/gallery/gallery-04.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'The Trinity building, under initial construction, ',
     },
     {
       src: 'assets/images/home/gallery/walter-kim.jpg',
-      alt: 'Walter Kim',
+      alt: 'Pastor Walter Kim with his family, outside the entrance to the church building.',
       pos: 'center 60%',
     },
     {
       src: 'assets/images/home/gallery/gallery-09.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Members of the church perform a skit.',
     },
     {
       src: 'assets/images/home/gallery/archive-scan-09.jpg',
-      alt: 'An archival photo from Trinity’s history',
+      alt: 'Easter at Trinity. The choir and orchestra perform.',
     },
     {
       src: 'assets/images/home/gallery/tpc-homecoming-05.jpg',
-      alt: 'TPC Homecoming',
+      alt: 'Pastor Wade Bradshaw speaks at a Trinity Homecoming',
       pos: 'center 30%',
     },
     {
       src: 'assets/images/home/gallery/tpc-homecoming-01.jpg',
-      alt: 'TPC Homecoming',
+      alt: 'Pastor Greg Thompson makes a point at a Trinity Homecoming',
     },
     {
       src: 'assets/images/home/gallery/gallery-02.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Pastor Chris Colquitt prays over staff as they are commissioned to serve elsewhere.',
       pos: 'center 10%',
     },
     {
       src: 'assets/images/home/gallery/gallery-03.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Members do work on the church grounds, spreading mulch and moving a wheelbarrow.',
     },
     {
       src: 'assets/images/home/gallery/john-and-kathy-hall.jpg',
@@ -103,66 +103,57 @@ document.addEventListener('DOMContentLoaded', function () {
     },
     {
       src: 'assets/images/home/gallery/gallery-06.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Mike Sharrett, laughing.',
     },
     {
       src: 'assets/images/home/gallery/easter-sunday-2014.jpg',
-      alt: 'Easter Sunday, 2014',
+      alt: 'Greg Thompson performs a baptism. Easter Sunday, 2014',
     },
     {
       src: 'assets/images/home/gallery/gallery-10.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Kelly Scott performs a baptism.',
       pos: 'center 15%',
     },
     {
       src: 'assets/images/home/gallery/gallery-11.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'The front entrance to the Trinity Presbyterian Church building',
     },
     {
       src: 'assets/images/home/gallery/gallery-14.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'The Trinity sanctuary',
     },
     {
       src: 'assets/images/home/gallery/evening-worship-2024.jpg',
-      alt: 'Evening worship, January 2024',
+      alt: 'Pastor Joe Magri addresses the congregation during an evening worship service. January 2024',
       pos: 'center 36%',
     },
     {
       src: 'assets/images/home/gallery/gallery-15.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Pastor John Hall',
       pos: 'center 14%',
     },
     {
       src: 'assets/images/home/gallery/gallery-16.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Pastor Mike Sharrett, with his wife, addresses the congregation.',
     },
-    {
-      src: 'assets/images/home/gallery/gallery-17.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
-    },
-    {
-      src: 'assets/images/home/gallery/gallery-18.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
-      pos: 'center 28%',
-    },
+    // Duplicate of Mike Sharrett removed.
+    // Triplicate of Mike Sharrett removed.
     {
       src: 'assets/images/home/gallery/gallery-19.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'Elders lay hands on Pastor Kelly Scott.',
     },
     {
       src: 'assets/images/home/gallery/tpc-homecoming-06.jpg',
-      alt: 'TPC Homecoming',
+      alt: 'Tony Giles at the mic, TPC Homecoming',
       pos: 'center 16%',
     },
     {
       src: 'assets/images/home/gallery/tpc-homecoming-02.jpg',
-      alt: 'TPC Homecoming',
+      alt: 'Trinity pastors, current and former, at TPC Homecoming',
     },
-    // Moved out of its original group (was alongside gallery-10/gallery-11,
-    // too similar to them) — into the last group instead.
     {
       src: 'assets/images/home/gallery/gallery-12.jpg',
-      alt: 'Trinity Presbyterian Church congregation',
+      alt: 'A wing of the Trinity building, from the exterior, as work is done on the windows and siding.',
     },
   ];
 
@@ -180,9 +171,9 @@ document.addEventListener('DOMContentLoaded', function () {
   if (groupCount <= 1) return;
 
   var FADE_MS = 600;
-  var INTERVAL_MS = 12000;
+  var INTERVAL_MS = 9000;
   var STAGGER_MS = INTERVAL_MS / slots.length;
-  var INITIAL_DELAY_MS = 4000;
+  var INITIAL_DELAY_MS = 2000;
 
   // Each slot runs its own independent timer, offset from the others by
   // STAGGER_MS, rather than one shared interval advancing all three at
